@@ -1,0 +1,132 @@
+name: Update profile
+
+on:
+  schedule:
+    - cron: "0 0 */3 * *"
+  workflow_dispatch:
+
+concurrency:
+  group: update-profile
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        repo:
+          - ah.sh
+          - metatree-nix
+          - nix-ast
+          - nix-bulkfetch-url
+          - nix-meta
+          - nixos-config
+          - skills-nix
+          - srctree-nix
+        include:
+          - theme: light
+            bg: ffffff
+            fg: 1f2328
+            accent: 0969da
+            border: d1d9e0
+            emph: 0969da
+          - theme: dark
+            bg: 0d1117
+            fg: f0f6fc
+            accent: 4493f8
+            border: 3d444d
+            emph: 1f6feb
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Prepare dir
+        run: mkdir -p assets
+
+      - name: Generate pin card
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: pin
+          options: username=${{ github.repository_owner }}&repo=${{ matrix.repo }}&bg_color=${{ matrix.bg }}&title_color=${{ matrix.accent }}&text_color=${{ matrix.fg }}&icon_color=${{ matrix.emph }}&border_color=${{ matrix.border }}
+          path: assets/${{ matrix.repo }}-${{ matrix.theme }}.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload card
+        uses: actions/upload-artifact@v7
+        with:
+          path: assets/${{ matrix.repo }}-${{ matrix.theme }}.svg
+          archive: false
+          retention-days: 1
+          if-no-files-found: error
+
+  assemble:
+    needs: generate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge cards
+        uses: actions/upload-artifact/merge@v7
+        with:
+          name: cards
+          pattern: "*.svg"
+          delete-merged: true
+          retention-days: 1
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: cards
+          path: assets
+
+      - name: Generate README sorted by stars
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          repos=($(for f in assets/*.svg; do
+            [[ -e "$f" ]] || continue
+            n="${f#assets/}"
+            n="${n%.svg}"
+            n="${n%-light}"
+            n="${n%-dark}"
+            printf '%s\n' "$n"
+          done | sort -u))
+
+          declare -A stars
+          while IFS=$'\t' read -r name count; do
+            stars[$name]=$count
+          done < <(gh api graphql --jq '.data.repositoryOwner.repositories.nodes[] | [.name, .stargazerCount] | @tsv' \
+            -f query='query($login: String!) { repositoryOwner(login: $login) { repositories(first: 100) { nodes { name stargazerCount } } } }' \
+            -F login="$OWNER" 2>/dev/null)
+
+          ranked=($(for p in "${repos[@]}"; do
+            printf '%s %s\n' "${stars[$p]:-0}" "$p"
+          done | sort -k1,1rn -k2,2 | awk '{print $2}'))
+          {
+            for ((i = 0; i < ${#ranked[@]}; i++)); do
+              p="${ranked[i]}"
+              if ((i % 2 == 1)); then
+                printf ' &nbsp;&nbsp;'
+              elif ((i > 0)); then
+                printf '\n\n'
+              fi
+              printf '<a href="https://github.com/%s/%s"><picture>' "$OWNER" "$p"
+              printf '<source media="(prefers-color-scheme: dark)" srcset="./assets/%s-dark.svg">' "$p"
+              printf '<source media="(prefers-color-scheme: light)" srcset="./assets/%s-light.svg">' "$p"
+              printf '<img src="./assets/%s-dark.svg" alt="%s"></picture></a>' "$p" "$p"
+            done
+            printf '\n\n'
+          } > README.md
+
+      - name: Commit
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "\u200B"
