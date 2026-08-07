@@ -1,12 +1,8 @@
-[![ah.sh](./profile/pin-ah.sh.svg)](https://github.com/z1-0/ah.sh) &nbsp;&nbsp;
-[![nix-ast](./profile/pin-nix-ast.svg)](https://github.com/z1-0/nix-ast)
+<a href="https://github.com/z1-0/ah.sh"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/ah.sh-dark.svg"><source media="(prefers-color-scheme: light)" srcset="./assets/ah.sh-light.svg"><img src="./assets/ah.sh-dark.svg" alt="ah.sh"></picture></a> &nbsp;&nbsp;<a href="https://github.com/z1-0/nix-ast"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/nix-ast-dark.svg"><source media="(prefers-color-scheme: light)" srcset="./assets/nix-ast-light.svg"><img src="./assets/nix-ast-dark.svg" alt="nix-ast"></picture></a>
 
-[![skills-nix](./profile/pin-skills-nix.svg)](https://github.com/z1-0/skills-nix) &nbsp;&nbsp;
-[![metatree-nix](./profile/pin-metatree-nix.svg)](https://github.com/z1-0/metatree-nix)
+<a href="https://github.com/z1-0/skills-nix"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/skills-nix-dark.svg"><source media="(prefers-color-scheme: light)" srcset="./assets/skills-nix-light.svg"><img src="./assets/skills-nix-dark.svg" alt="skills-nix"></picture></a> &nbsp;&nbsp;<a href="https://github.com/z1-0/metatree-nix"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/metatree-nix-dark.svg"><source media="(prefers-color-scheme: light)" srcset="./assets/metatree-nix-light.svg"><img src="./assets/metatree-nix-dark.svg" alt="metatree-nix"></picture></a>
 
-[![nix-meta](./profile/pin-nix-meta.svg)](https://github.com/z1-0/nix-meta) &nbsp;&nbsp;
-[![nixos-config](./profile/pin-nixos-config.svg)](https://github.com/z1-0/nixos-config)
+<a href="https://github.com/z1-0/nix-meta"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/nix-meta-dark.svg"><source media="(prefers-color-scheme: light)" srcset="./assets/nix-meta-light.svg"><img src="./assets/nix-meta-dark.svg" alt="nix-meta"></picture></a> &nbsp;&nbsp;<a href="https://github.com/z1-0/nixos-config"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/nixos-config-dark.svg"><source media="(prefers-color-scheme: light)" srcset="./assets/nixos-config-light.svg"><img src="./assets/nixos-config-dark.svg" alt="nixos-config"></picture></a>
 
-[![srctree-nix](./profile/pin-srctree-nix.svg)](https://github.com/z1-0/srctree-nix) &nbsp;&nbsp;
-[![nix-bulkfetch-url](./profile/pin-nix-bulkfetch-url.svg)](https://github.com/z1-0/nix-bulkfetch-url)
+<a href="https://github.com/z1-0/srctree-nix"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/srctree-nix-dark.svg"><source media="(prefers-color-scheme: light)" srcset="./assets/srctree-nix-light.svg"><img src="./assets/srctree-nix-dark.svg" alt="srctree-nix"></picture></a> &nbsp;&nbsp;<a href="https://github.com/z1-0/nix-bulkfetch-url"><picture><source media="(prefers-color-scheme: dark)" srcset="./assets/nix-bulkfetch-url-dark.svg"><source media="(prefers-color-scheme: light)" srcset="./assets/nix-bulkfetch-url-light.svg"><img src="./assets/nix-bulkfetch-url-dark.svg" alt="nix-bulkfetch-url"></picture></a>
 
