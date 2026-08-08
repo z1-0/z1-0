@@ -75,17 +75,11 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Merge cards
-        uses: actions/upload-artifact/merge@v7
-        with:
-          name: cards
-          pattern: card-*
-          delete-merged: true
-          retention-days: 1
-
       - uses: actions/download-artifact@v8
         with:
-          name: cards
+          pattern: "*.svg"
+          path: assets
+          merge-multiple: true
 
       - name: Generate README in matrix order
         env:
