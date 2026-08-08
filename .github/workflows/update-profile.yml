@@ -2,7 +2,7 @@ name: Update profile
 
 on:
   schedule:
-    - cron: "0 0 */3 * *"
+    - cron: "0 0,16 * * *"
   workflow_dispatch:
 
 concurrency:
@@ -86,33 +86,21 @@ jobs:
           name: cards
           path: assets
 
-      - name: Generate README sorted by stars
+      - name: Generate README in matrix order
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OWNER: ${{ github.repository_owner }}
         run: |
-          repos=($(for f in assets/*.svg; do
-            [[ -e "$f" ]] || continue
-            n="${f#assets/}"
-            n="${n%.svg}"
-            n="${n%-light}"
-            n="${n%-dark}"
-            printf '%s\n' "$n"
-          done | sort -u))
+          repos=($(awk '/^[[:space:]]*repo:$/{f=1;next} f && /^[[:space:]]*- /{sub(/^[[:space:]]*- /,"");print;next} f{exit}' .github/workflows/update-profile.yml))
 
-          declare -A stars
-          while IFS=$'\t' read -r name count; do
-            stars[$name]=$count
-          done < <(gh api graphql --jq '.data.repositoryOwner.repositories.nodes[] | [.name, .stargazerCount] | @tsv' \
-            -f query='query($login: String!) { repositoryOwner(login: $login) { repositories(first: 100) { nodes { name stargazerCount } } } }' \
-            -F login="$OWNER" 2>/dev/null)
-
-          ranked=($(for p in "${repos[@]}"; do
-            printf '%s %s\n' "${stars[$p]:-0}" "$p"
-          done | sort -k1,1rn -k2,2 | awk '{print $2}'))
+          render=()
+          for p in "${repos[@]}"; do
+            if [[ -e "assets/$p-light.svg" && -e "assets/$p-dark.svg" ]]; then
+              render+=("$p")
+            fi
+          done
           {
-            for ((i = 0; i < ${#ranked[@]}; i++)); do
-              p="${ranked[i]}"
+            for ((i = 0; i < ${#render[@]}; i++)); do
+              p="${render[i]}"
               if ((i % 2 == 1)); then
                 printf ' &nbsp;&nbsp;'
               elif ((i > 0)); then
